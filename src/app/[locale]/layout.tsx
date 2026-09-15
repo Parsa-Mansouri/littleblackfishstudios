@@ -25,16 +25,10 @@ export const viewport: Viewport = {
 	colorScheme: "dark",
 };
 
-// TEMPORARY - Enamad domain verification. Revert `title` to
-// "Little Black Fish Studios | Creative House" once verification passes.
 export const metadata: Metadata = {
-	title: "1848007",
+	title: "Little Black Fish Studios | Creative House",
 	description:
 		"A creative digital agency swimming against the current. Web design, development, and branding.",
-	other: {
-		// Enamad verification meta tag. Safe to keep permanently.
-		enamad: "1848007",
-	},
 	icons: {
 		icon: "/logo-icon-white.png",
 		apple: "/logo-icon-white.png",
