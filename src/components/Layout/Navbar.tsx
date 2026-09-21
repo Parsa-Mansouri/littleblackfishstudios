@@ -69,6 +69,7 @@ export default function Navbar({ locale }: { locale: string }) {
 		},
 		{ href: `/${locale}/about`, label: isRtl ? "درباره ما" : "About" },
 		{ href: `/${locale}/contact`, label: isRtl ? "تماس" : "Contact" },
+		{ href: `/${locale}/support`, label: isRtl ? "حمایت" : "Support" },
 	];
 
 	const panelVariants: Variants = {

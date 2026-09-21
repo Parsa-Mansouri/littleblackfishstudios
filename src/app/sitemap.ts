@@ -24,6 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/${locale}`, lastModified: new Date() },
     { url: `${BASE_URL}/${locale}/about`, lastModified: new Date() },
     { url: `${BASE_URL}/${locale}/contact`, lastModified: new Date() },
+    { url: `${BASE_URL}/${locale}/support`, lastModified: new Date() },
   ]);
 
   const projectRoutes: MetadataRoute.Sitemap = (projects ?? []).flatMap((p) =>
