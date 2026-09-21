@@ -30,23 +30,38 @@ export default function SupportCTA({ locale }: { locale: string }) {
 
   return (
     <motion.div
-      className="flex flex-col items-center gap-4"
+      className="flex flex-col items-center gap-5"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.a
-        href={SUPPORT_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={copy.cta}
-        variants={itemVariants}
-        className="group inline-flex min-h-14 w-full cursor-pointer items-center justify-center gap-3 rounded-full bg-white px-8 text-sm font-black tracking-[0.2em] text-black uppercase shadow-lg shadow-white/5 transition-all duration-200 hover:bg-zinc-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-black sm:min-h-16 sm:w-auto sm:px-12 sm:text-base"
-      >
-        <Heart className="size-4 shrink-0 sm:size-5" />
-        <span>{copy.cta}</span>
-        <ArrowUpRight className="size-4 shrink-0 transition-transform duration-200 group-hover:-translate-y-0.5 sm:size-5" />
-      </motion.a>
+      <motion.div variants={itemVariants} className="group relative w-full sm:w-auto">
+        {/* Soft ambient glow, brightens on hover */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -inset-2 rounded-full bg-blue-500/30 opacity-60 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
+        />
+
+        <a
+          href={SUPPORT_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={copy.cta}
+          className="relative inline-flex min-h-16 w-full cursor-pointer items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-blue-600 to-blue-500 px-10 ring-1 ring-white/15 ring-inset transition-all duration-200 ease-out hover:from-blue-500 hover:to-blue-400 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-black sm:min-h-20 sm:w-auto sm:px-16"
+        >
+          {/* Sheen sweep on hover */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 -translate-x-full skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"
+          />
+
+          <span className="relative flex items-center gap-3 text-base font-black tracking-[0.2em] text-white uppercase sm:gap-4 sm:text-xl">
+            <Heart className="size-5 shrink-0 transition-transform duration-300 group-hover:scale-110 sm:size-6" />
+            {copy.cta}
+            <ArrowUpRight className="size-5 shrink-0 transition-transform duration-300 group-hover:-translate-y-0.5 sm:size-6" />
+          </span>
+        </a>
+      </motion.div>
 
       <motion.p
         variants={itemVariants}
