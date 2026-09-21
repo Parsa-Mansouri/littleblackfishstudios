@@ -14,9 +14,9 @@ export const SUPPORT_PAGE = {
     title: 'Support the Studio',
     subtitle:
       'We are independent. Every contribution goes straight into the next film — gear, sound, and the time it takes to get it right.',
-    cta: 'Support on Gumroad',
+    cta: 'Support Us',
     ctaHint: 'Name your own amount',
-    note: 'Payments are handled securely by Gumroad and open in a new tab.',
+    note: 'Payment is handled securely and opens in a new tab.',
     contactLead: 'Would rather talk first?',
     contactLink: 'Get in touch',
     metaTitle: 'Support | Little Black Fish Studios',
@@ -28,9 +28,9 @@ export const SUPPORT_PAGE = {
     title: 'حمایت از استودیو',
     subtitle:
       'ما مستقل هستیم. هر حمایت مستقیم صرف فیلم بعدی می‌شود؛ تجهیزات، صدا، و زمانی که کار را درست درمی‌آورد.',
-    cta: 'حمایت در Gumroad',
+    cta: 'از ما حمایت کن',
     ctaHint: 'مبلغ را خودت انتخاب کن',
-    note: 'پرداخت به‌صورت امن توسط Gumroad انجام می‌شود و در زبانه‌ی جدید باز می‌شود.',
+    note: 'پرداخت امن است و در زبانه‌ی جدید باز می‌شود.',
     contactLead: 'ترجیح می‌دهی اول صحبت کنیم؟',
     contactLink: 'تماس با ما',
     metaTitle: 'حمایت | استودیو ماهی سیاه کوچولو',

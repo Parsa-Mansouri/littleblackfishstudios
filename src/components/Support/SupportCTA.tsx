@@ -7,8 +7,6 @@ import { SUPPORT_PAGE, SUPPORT_URL } from '@/data/support';
 
 const EASE_SNAPPY: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-const LIFT_SPRING = { type: 'spring' as const, stiffness: 300, damping: 20 };
-
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -31,33 +29,31 @@ export default function SupportCTA({ locale }: { locale: string }) {
   const copy = isRtl ? SUPPORT_PAGE.fa : SUPPORT_PAGE.en;
 
   return (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible">
+    <motion.div
+      className="flex flex-col items-center gap-4"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       <motion.a
         href={SUPPORT_URL}
         target="_blank"
         rel="noopener noreferrer"
         aria-label={copy.cta}
         variants={itemVariants}
-        whileHover="hover"
-        whileTap={{ scale: 0.99 }}
-        className="group flex w-full flex-col items-center justify-center gap-4 rounded-2xl border border-blue-500/40 bg-blue-600 px-8 py-14 text-center shadow-xl shadow-blue-600/20 transition-colors duration-300 hover:bg-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-4 focus-visible:ring-offset-black md:py-20"
+        className="group inline-flex min-h-14 w-full cursor-pointer items-center justify-center gap-3 rounded-full bg-white px-8 text-sm font-black tracking-[0.2em] text-black uppercase shadow-lg shadow-white/5 transition-all duration-200 hover:bg-zinc-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-black sm:min-h-16 sm:w-auto sm:px-12 sm:text-base"
       >
-        <motion.span
-          className="flex size-14 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors group-hover:bg-white/20 group-hover:text-white"
-          variants={{ rest: { y: 0 }, hover: { y: -4, transition: LIFT_SPRING } }}
-        >
-          <Heart size={26} />
-        </motion.span>
-
-        <span className="flex items-center gap-3 text-2xl font-black tracking-tight text-white uppercase sm:text-4xl md:text-5xl">
-          {copy.cta}
-          <ArrowUpRight className="size-6 shrink-0 transition-transform duration-300 group-hover:-translate-y-1 sm:size-9 md:size-11" />
-        </span>
-
-        <span className="text-xs font-bold tracking-[0.2em] text-blue-100/70 uppercase">
-          {copy.ctaHint}
-        </span>
+        <Heart className="size-4 shrink-0 sm:size-5" />
+        <span>{copy.cta}</span>
+        <ArrowUpRight className="size-4 shrink-0 transition-transform duration-200 group-hover:-translate-y-0.5 sm:size-5" />
       </motion.a>
+
+      <motion.p
+        variants={itemVariants}
+        className="text-xs font-bold tracking-[0.2em] text-zinc-500 uppercase"
+      >
+        {copy.ctaHint}
+      </motion.p>
     </motion.div>
   );
 }
