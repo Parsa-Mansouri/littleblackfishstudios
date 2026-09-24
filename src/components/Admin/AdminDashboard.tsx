@@ -386,7 +386,7 @@ export default function AdminDashboard({
                     href={`mailto:${encodeURIComponent(s.email)}?subject=${encodeURIComponent(
                       `Re: Your project inquiry`,
                     )}&body=${encodeURIComponent(
-                      `Hi ${s.name},\n\nThanks for reaching out — \n\n---\nYour message:\n${s.message}`,
+                      `Hi ${s.name},\n\nThanks for reaching out.\n\n---\nYour message:\n${s.message}`,
                     )}`}
                     className="flex items-center gap-1.5 text-zinc-400 transition-colors hover:text-blue-400"
                     dir="ltr"
@@ -453,7 +453,7 @@ export default function AdminDashboard({
                 <AlertTriangle size={14} />
                 <span>
                   {isRtl ? 'ایمیل ارسال نشد' : 'Email delivery failed'}
-                  {s.emailError ? ` — ${s.emailError}` : ''}
+                  {s.emailError ? `: ${s.emailError}` : ''}
                 </span>
               </div>
             )}

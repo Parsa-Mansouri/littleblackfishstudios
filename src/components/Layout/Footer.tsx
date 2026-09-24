@@ -48,7 +48,7 @@ export default function Footer({ locale }: { locale: string }) {
             </Link>
             <p className="max-w-xs text-sm leading-relaxed text-zinc-500">
               {isRtl
-                ? 'خلاقیت در دل محدودیت — از سینما تا انیمیشن.'
+                ? 'خلاقیت در دل محدودیت، از سینما تا انیمیشن.'
                 : 'Creative storytelling from cinema to animation.'}
             </p>
             {/* Socials */}

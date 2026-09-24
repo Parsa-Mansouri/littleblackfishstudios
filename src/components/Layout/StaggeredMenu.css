@@ -1,0 +1,241 @@
+/* Adapted from React Bits' StaggeredMenu, restyled for the site (black, blue accents). */
+
+/* ---------- Toggle ---------- */
+
+.sm-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  padding: 0 0.25rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+[dir='rtl'] .sm-toggle,
+.sm-toggle:lang(fa) {
+  letter-spacing: 0;
+  font-size: 1rem;
+}
+
+.sm-toggle:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.sm-toggle-textWrap {
+  position: relative;
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sm-toggle-textInner {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.sm-toggle-line {
+  display: block;
+  height: 1em;
+  line-height: 1;
+}
+
+.sm-icon {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b82f6;
+  will-change: transform;
+}
+
+.sm-icon-line {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+/* ---------- Wrapper & layers ---------- */
+
+.staggered-menu-wrapper {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  z-index: 40; /* below the navbar (z-50) so the logo and Close stay on top */
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.staggered-menu-wrapper[data-open] {
+  pointer-events: auto;
+}
+
+.sm-prelayers,
+.staggered-menu-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+
+[data-position='left'] .sm-prelayers,
+[data-position='left'] .staggered-menu-panel {
+  right: auto;
+  left: 0;
+}
+
+.sm-prelayers {
+  pointer-events: none;
+  z-index: 5;
+}
+
+.sm-prelayer {
+  position: absolute;
+  inset: 0;
+  /* Offscreen before GSAP takes over, so nothing flashes on load */
+  transform: translateX(100%);
+}
+
+[data-position='left'] .sm-prelayer,
+[data-position='left'] .staggered-menu-panel {
+  transform: translateX(-100%);
+}
+
+/* ---------- Panel ---------- */
+
+.staggered-menu-panel {
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  padding: 8rem 1.5rem 2rem;
+  overflow-y: auto;
+  transform: translateX(100%);
+  background:
+    radial-gradient(120% 55% at 100% 100%, rgba(37, 99, 235, 0.22), transparent 60%),
+    radial-gradient(80% 40% at 0% 0%, rgba(37, 99, 235, 0.08), transparent 70%),
+    #000;
+}
+
+[dir='rtl'] .staggered-menu-panel {
+  background:
+    radial-gradient(120% 55% at 0% 100%, rgba(37, 99, 235, 0.22), transparent 60%),
+    radial-gradient(80% 40% at 100% 0%, rgba(37, 99, 235, 0.08), transparent 70%),
+    #000;
+}
+
+/* Thin blue edge at the top, echoing the site's accent lines */
+.staggered-menu-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #3b82f6, transparent);
+}
+
+.sm-panel-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sm-panel-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  counter-reset: smItem;
+}
+
+.sm-panel-itemWrap {
+  position: relative;
+  overflow: hidden;
+  line-height: 1;
+  padding-bottom: 0.1em; /* room for descenders under overflow: hidden */
+}
+
+.sm-panel-item {
+  position: relative;
+  display: inline-block;
+  padding-inline-end: 2.75rem;
+  color: #fff;
+  font-size: clamp(2.5rem, 13vw, 3.75rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.25s;
+}
+
+[dir='rtl'] .sm-panel-item {
+  letter-spacing: 0; /* negative tracking breaks Persian letter joins */
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.sm-panel-item:hover,
+.sm-panel-item:focus-visible,
+.sm-panel-item[data-active] {
+  color: #60a5fa;
+  outline: none;
+}
+
+.sm-panel-itemLabel {
+  display: inline-block;
+  will-change: transform;
+  transform-origin: 50% 100%;
+}
+
+/* 01, 02 … numbering */
+.sm-panel-item::after {
+  counter-increment: smItem;
+  content: counter(smItem, decimal-leading-zero);
+  position: absolute;
+  top: 0.35em;
+  inset-inline-end: 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  color: #3b82f6;
+  opacity: var(--sm-num-opacity, 0);
+  pointer-events: none;
+  user-select: none;
+}
+
+[dir='rtl'] .sm-panel-item::after {
+  top: 0.6em;
+}
+
+/* ---------- Footer slot ---------- */
+
+.sm-footer {
+  margin-top: auto;
+  padding-top: 2rem;
+}

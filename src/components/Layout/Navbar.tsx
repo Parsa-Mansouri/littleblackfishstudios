@@ -3,15 +3,10 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useSelectedLayoutSegments } from "next/navigation";
-import { Globe, X } from "lucide-react";
-import {
-	motion,
-	AnimatePresence,
-	useScroll,
-	useTransform,
-	type Variants,
-} from "framer-motion";
+import { usePathname } from "next/navigation";
+import { Globe } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import StaggeredMenuPanel, { StaggeredMenuToggle } from "./StaggeredMenu";
 
 export default function Navbar({ locale }: { locale: string }) {
 	const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +31,31 @@ export default function Navbar({ locale }: { locale: string }) {
 		}
 		return () => {
 			document.body.style.overflow = "unset";
+		};
+	}, [isOpen]);
+
+	// Close on navigation
+	const [prevPathname, setPrevPathname] = useState(pathname);
+	if (pathname !== prevPathname) {
+		setPrevPathname(pathname);
+		setIsOpen(false);
+	}
+
+	// Close on Escape, and when the viewport grows past the mobile breakpoint
+	useEffect(() => {
+		if (!isOpen) return;
+		const onKey = (e: KeyboardEvent) => {
+			if (e.key === "Escape") setIsOpen(false);
+		};
+		const mq = window.matchMedia("(min-width: 768px)");
+		const onBreakpoint = () => {
+			if (mq.matches) setIsOpen(false);
+		};
+		window.addEventListener("keydown", onKey);
+		mq.addEventListener("change", onBreakpoint);
+		return () => {
+			window.removeEventListener("keydown", onKey);
+			mq.removeEventListener("change", onBreakpoint);
 		};
 	}, [isOpen]);
 
@@ -71,43 +91,6 @@ export default function Navbar({ locale }: { locale: string }) {
 		{ href: `/${locale}/contact`, label: isRtl ? "تماس" : "Contact" },
 		{ href: `/${locale}/support`, label: isRtl ? "حمایت" : "Support" },
 	];
-
-	const panelVariants: Variants = {
-		hidden: { x: "100%" },
-		visible: {
-			x: 0,
-			transition: {
-				type: "spring",
-				stiffness: 260,
-				damping: 28,
-				when: "beforeChildren",
-				staggerChildren: 0.07,
-				delayChildren: 0.1,
-			},
-		},
-		exit: {
-			x: "100%",
-			transition: { duration: 0.3, ease: "easeIn" },
-		},
-	};
-
-	const itemVariants: Variants = {
-		hidden: { x: 30, opacity: 0 },
-		visible: {
-			x: 0,
-			opacity: 1,
-			transition: { duration: 0.35, ease: "easeOut" },
-		},
-	};
-
-	const topLineVariants: Variants = {
-		closed: { rotate: 0, y: -6 },
-		open: { rotate: 45, y: 0 },
-	};
-	const bottomLineVariants: Variants = {
-		closed: { rotate: 0, y: 6 },
-		open: { rotate: -45, y: 0 },
-	};
 
 	return (
 		<>
@@ -194,148 +177,46 @@ export default function Navbar({ locale }: { locale: string }) {
 						</motion.button>
 					</div>
 
-					<motion.button
-						className="md:hidden text-white relative w-11 h-11 flex items-center justify-center"
-						onClick={() => setIsOpen((v) => !v)}
-						aria-label={isOpen ? "Close menu" : "Open menu"}
-						whileTap={{ scale: 0.9 }}
-					>
-						<motion.span
-							className="absolute block h-[2px] w-7 bg-white rounded-full"
-							variants={topLineVariants}
-							animate={isOpen ? "open" : "closed"}
-							transition={{ duration: 0.3, ease: "easeInOut" }}
+					<div className="md:hidden">
+						<StaggeredMenuToggle
+							open={isOpen}
+							onToggle={() => setIsOpen((v) => !v)}
+							labels={isRtl ? ["منو", "بستن"] : ["Menu", "Close"]}
 						/>
-						<motion.span
-							className="absolute block h-[2px] w-7 bg-white rounded-full"
-							variants={bottomLineVariants}
-							animate={isOpen ? "open" : "closed"}
-							transition={{ duration: 0.3, ease: "easeInOut" }}
-						/>
-					</motion.button>
+					</div>
 				</div>
 			</motion.header>
 
-			<AnimatePresence>
-				{isOpen && (
-					<>
-						<motion.div
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
-							transition={{ duration: 0.25 }}
-							className="fixed inset-0 z-[9998] bg-black/70 backdrop-blur-sm md:hidden"
-							onClick={() => setIsOpen(false)}
-						/>
-
-						<motion.div
-							variants={panelVariants}
-							initial="hidden"
-							animate="visible"
-							exit="exit"
-							className={`fixed top-0 h-dvh w-full max-w-sm z-[9999] bg-zinc-950 flex flex-col md:hidden border-zinc-800 ${
-								isRtl ? "left-0 border-r" : "right-0 border-l"
-							}`}
+			<div className="md:hidden">
+				<StaggeredMenuPanel
+					open={isOpen}
+					position={isRtl ? "left" : "right"}
+					dir={isRtl ? "rtl" : "ltr"}
+					items={navLinks.map((link) => ({
+						label: link.label,
+						href: link.href,
+						active: isActive(link.href),
+						onClick: link.href.includes("#projects")
+							? (e) => {
+									handleScroll(e);
+									setIsOpen(false);
+								}
+							: () => setIsOpen(false),
+					}))}
+					footer={
+						<button
+							onClick={() => {
+								toggleLanguage();
+								setIsOpen(false);
+							}}
+							className="w-full flex items-center justify-center gap-3 rounded-full border border-white/15 bg-white/5 px-6 py-4 text-sm font-black uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-black active:scale-[0.98]"
 						>
-							<motion.div
-								initial={{ scaleX: 0 }}
-								animate={{ scaleX: 1 }}
-								exit={{ scaleX: 0 }}
-								transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-								className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-blue-500 to-transparent origin-center"
-							/>
-
-							<div className={`flex items-center justify-between px-6 h-20 border-b border-zinc-800/60 ${isRtl ? "flex-row-reverse" : ""}`}>
-								<motion.div variants={itemVariants}>
-									<Link
-										href={`/${locale}`}
-										onClick={() => setIsOpen(false)}
-										className="flex items-center gap-3"
-									>
-										<Image
-											src="/logo-icon-white.png"
-											width={36}
-											height={36}
-											alt="Logo"
-											className="w-8 h-auto"
-										/>
-										<span className="font-lalezar text-lg text-white">
-											{isRtl ? "ماهی سیاه" : "Little Black Fish"}
-										</span>
-									</Link>
-								</motion.div>
-								<motion.button
-									variants={itemVariants}
-									onClick={() => setIsOpen(false)}
-									whileTap={{ scale: 0.9 }}
-									aria-label="Close menu"
-									className="w-11 h-11 -mr-2 flex items-center justify-center rounded-full text-white/70 hover:text-white hover:bg-white/5 transition-colors"
-								>
-									<X size={24} />
-								</motion.button>
-							</div>
-
-							<nav className="flex flex-col px-6 pt-8 gap-1 flex-1">
-								{navLinks.map((link, i) => (
-									<motion.div
-										key={link.href}
-										variants={itemVariants}
-									>
-										<Link
-											href={link.href}
-											onClick={
-												link.href.includes("#projects")
-													? (e) => {
-															handleScroll(e);
-															setIsOpen(false);
-														}
-													: () => setIsOpen(false)
-											}
-											className={`group flex items-center gap-4 py-5 border-b border-zinc-800/40 ${
-												isRtl ? "flex-row-reverse text-right" : ""
-											}`}
-										>
-											<span className="text-blue-500 text-xs font-black tracking-widest w-5 text-center shrink-0">
-												{String(i + 1).padStart(2, "0")}
-											</span>
-											<span
-												className={`font-black uppercase transition-colors flex-1 text-xl tracking-widest ${
-													isActive(link.href) ? 'text-blue-400' : 'text-white group-hover:text-blue-400'
-												}`}
-											>
-												{link.label}
-											</span>
-											<motion.span
-												className="text-zinc-600 group-hover:text-blue-500 transition-colors shrink-0"
-												whileHover={{ x: isRtl ? -4 : 4 }}
-											>
-												{isRtl ? "←" : "→"}
-											</motion.span>
-										</Link>
-									</motion.div>
-								))}
-							</nav>
-
-							<motion.div
-								variants={itemVariants}
-								className="px-6 pb-8 pt-4 border-t border-zinc-800/60"
-							>
-								<motion.button
-									onClick={() => {
-										toggleLanguage();
-										setIsOpen(false);
-									}}
-									whileTap={{ scale: 0.97 }}
-									className="w-full flex items-center justify-center gap-3 rounded-xl border border-zinc-700 bg-zinc-900 px-6 py-4 text-sm font-black uppercase tracking-widest text-white hover:bg-white hover:text-black transition-colors"
-								>
-									<Globe size={16} />
-									{locale === "en" ? "Persian (FA)" : "English (EN)"}
-								</motion.button>
-							</motion.div>
-						</motion.div>
-					</>
-				)}
-			</AnimatePresence>
+							<Globe size={16} />
+							{locale === "en" ? "Persian (FA)" : "English (EN)"}
+						</button>
+					}
+				/>
+			</div>
 		</>
 	);
 }

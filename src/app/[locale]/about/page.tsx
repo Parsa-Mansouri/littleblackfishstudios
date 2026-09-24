@@ -11,7 +11,7 @@ const content = {
     acts: [
       {
         title: "Act I",
-        text: "It all began in the cold winter of 2007; not in equipped studios, but in the heart of limitations. We pursued two distinct paths at Art and Soore Universities—one in Cinema, the other in Theater. Yet, our point of connection was always the same: a rebellious desire for storytelling."
+        text: "It all began in the cold winter of 2007; not in equipped studios, but in the heart of limitations. We pursued two distinct paths at Art and Soore Universities: one in Cinema, the other in Theater. Yet, our point of connection was always the same: a rebellious desire for storytelling."
       },
       {
         title: "Act II",
