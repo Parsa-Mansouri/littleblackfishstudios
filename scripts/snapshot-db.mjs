@@ -122,8 +122,13 @@ async function localize(src) {
   if (downloaded.has(src)) return downloaded.get(src);
 
   const rel = decodeURIComponent(src.split(STORAGE_MARKER)[1].split('?')[0]);
-  const res = await fetch(src);
-  if (!res.ok) throw new Error(`download ${src}: ${res.status}`);
+  const res = await fetch(src).catch(() => null);
+  if (!res?.ok) {
+    // Storage may be down with the DB; keep the remote URL rather than losing the row
+    console.warn(`  ! could not download ${src} (${res?.status ?? 'network error'}), keeping remote URL`);
+    downloaded.set(src, src);
+    return src;
+  }
 
   const file = path.join(OUT_MEDIA, rel);
   await mkdir(path.dirname(file), { recursive: true });
