@@ -4,8 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import BackButton from '@/components/BackButton';
 import type { Metadata } from 'next';
-import { createServerClient } from '@/lib/supabase/server';
-import { getProjectBySlug } from '@/lib/queries/projects';
+import { getProjectBySlug, getProjectNav } from '@/lib/queries/public';
 import { YouTubeEmbed } from '@/components/YouTubeEmbed';
 import { RichText } from '@/components/RichText';
 import GalleryCarousel from '@/components/GalleryCarousel';
@@ -46,20 +45,12 @@ export default async function ProjectPage({ params }: Props) {
 
   const project = serializeProject(row);
 
-  const supabase = await createServerClient();
-
   // 2. Fetch navigation list (minimal columns)
-  const { data: navRows } = await supabase
-    .from('projects')
-    .select('id, slug, title_en, title_fa')
-    .eq('published', true)
-    .order('order', { ascending: true });
-
-  const allProjects = (navRows ?? []).map((r) => ({
-    id: r.id as string,
-    slug: r.slug as string,
-    titleEn: r.title_en as string,
-    titleFa: r.title_fa as string,
+  const allProjects = (await getProjectNav()).map((r) => ({
+    id: r.id,
+    slug: r.slug,
+    titleEn: r.title_en,
+    titleFa: r.title_fa,
   }));
 
   const currentIndex = allProjects.findIndex((p) => p.slug === slug);

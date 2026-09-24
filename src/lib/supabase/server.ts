@@ -27,11 +27,21 @@ export async function createServerClient() {
   );
 }
 
+// Public reads give up after this long so a dead DB falls back to the snapshot
+// (see lib/queries/public.ts) instead of hanging the render
+const ANON_TIMEOUT_MS = 4000;
+
 export function createAnonClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    { auth: { persistSession: false } }
+    {
+      auth: { persistSession: false },
+      global: {
+        fetch: (input, init) =>
+          fetch(input, { ...init, signal: init?.signal ?? AbortSignal.timeout(ANON_TIMEOUT_MS) }),
+      },
+    }
   );
 }
 

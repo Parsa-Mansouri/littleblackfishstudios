@@ -1,9 +1,8 @@
-import { createAnonClient } from "@/lib/supabase/server";
+import { getHomeData } from "@/lib/queries/public";
 import Hero from "@/components/Hero/Hero";
 import ProjectGrid from "@/components/ProjectGrid/ProjectGrid";
 import CategoryCarouselSection from "@/components/ProjectGrid/CategoryCarouselSection";
 import { notFound } from "next/navigation";
-import type { Project, HeroSlide, Category } from "@/lib/types";
 import {
 	serializeProject,
 	serializeHeroSlide,
@@ -23,39 +22,15 @@ export default async function HomePage({ params }: HomePageProps) {
 		notFound();
 	}
 
-	const supabase = createAnonClient();
+	const {
+		slides: slideRows,
+		projects: projectRows,
+		categories: categoryRows,
+	} = await getHomeData();
 
-	const [
-		{ data: slideRows },
-		{ data: projectRows },
-		{ data: categoryRows },
-	] = await Promise.all([
-		supabase
-			.from("hero_slides")
-			.select("*")
-			.eq("active", true)
-			.order("order", { ascending: true }),
-		supabase
-			.from("projects")
-			.select("*")
-			.eq("published", true)
-			.order("order", { ascending: true }),
-		supabase
-			.from("categories")
-			.select("*")
-			.eq("visible", true)
-			.order("order", { ascending: true }),
-	]);
-
-	const slides = ((slideRows ?? []) as unknown as HeroSlide[]).map(
-		serializeHeroSlide,
-	);
-	const projects = ((projectRows ?? []) as unknown as Project[]).map(
-		serializeProject,
-	);
-	const categories = ((categoryRows ?? []) as unknown as Category[]).map(
-		serializeCategory,
-	);
+	const slides = slideRows.map(serializeHeroSlide);
+	const projects = projectRows.map(serializeProject);
+	const categories = categoryRows.map(serializeCategory);
 
 	const projectsByCategory = new Map<string, typeof projects>();
 	for (const p of projects) {

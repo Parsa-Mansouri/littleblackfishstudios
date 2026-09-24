@@ -1,24 +1,11 @@
-import { createServerClient } from '@/lib/supabase/server';
+import { getSitemapData } from '@/lib/queries/public';
 import type { MetadataRoute } from 'next';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://littleblackfishstudios.com';
 const LOCALES = ['en', 'fa'] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const supabase = await createServerClient();
-
-  const [{ data: projects }, { data: categories }] = await Promise.all([
-    supabase
-      .from('projects')
-      .select('slug, updated_at')
-      .eq('published', true)
-      .order('order', { ascending: true }),
-    supabase
-      .from('categories')
-      .select('slug, updated_at')
-      .eq('visible', true)
-      .order('order', { ascending: true }),
-  ]);
+  const { projects, categories } = await getSitemapData();
 
   const staticRoutes: MetadataRoute.Sitemap = LOCALES.flatMap((locale) => [
     { url: `${BASE_URL}/${locale}`, lastModified: new Date() },
@@ -27,14 +14,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/${locale}/support`, lastModified: new Date() },
   ]);
 
-  const projectRoutes: MetadataRoute.Sitemap = (projects ?? []).flatMap((p) =>
+  const projectRoutes: MetadataRoute.Sitemap = projects.flatMap((p) =>
     LOCALES.map((locale) => ({
       url: `${BASE_URL}/${locale}/projects/${p.slug}`,
       lastModified: new Date(p.updated_at),
     }))
   );
 
-  const categoryRoutes: MetadataRoute.Sitemap = (categories ?? []).flatMap((c) =>
+  const categoryRoutes: MetadataRoute.Sitemap = categories.flatMap((c) =>
     LOCALES.map((locale) => ({
       url: `${BASE_URL}/${locale}/category/${c.slug}`,
       lastModified: new Date(c.updated_at),

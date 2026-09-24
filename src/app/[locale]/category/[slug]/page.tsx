@@ -1,13 +1,12 @@
 import { notFound } from 'next/navigation';
 import BackButton from '@/components/BackButton';
 import type { Metadata } from 'next';
-import { createAnonClient } from '@/lib/supabase/server';
+import { getCategoryBySlug, getProjectsByCategory } from '@/lib/queries/public';
 import ProjectGrid from '@/components/ProjectGrid/ProjectGrid';
 import {
   serializeCategory,
   serializeProject,
 } from '@/lib/serializers';
-import type { Category, Project } from '@/lib/types';
 
 export const revalidate = 3600;
 
@@ -18,15 +17,8 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
   const isRtl = locale === 'fa';
-  const supabase = createAnonClient();
-
-  const { data: row } = await supabase
-    .from('categories')
-    .select('name_en, name_fa, visible')
-    .eq('slug', slug)
-    .single();
-
-  if (!row || row.visible === false) return {};
+  const row = await getCategoryBySlug(slug);
+  if (!row) return {};
 
   const name = isRtl ? row.name_fa : row.name_en;
   return {
@@ -39,29 +31,11 @@ export default async function CategoryPage({ params }: Props) {
   if (!['en', 'fa'].includes(locale)) notFound();
   const isRtl = locale === 'fa';
 
-  const supabase = createAnonClient();
-
-  const { data: categoryRow } = await supabase
-    .from('categories')
-    .select('*')
-    .eq('slug', slug)
-    .eq('visible', true)
-    .single();
-
+  const categoryRow = await getCategoryBySlug(slug);
   if (!categoryRow) notFound();
 
-  const category = serializeCategory(categoryRow as unknown as Category);
-
-  const { data: projectRows } = await supabase
-    .from('projects')
-    .select('*')
-    .eq('published', true)
-    .eq('category_id', category.id)
-    .order('order', { ascending: true });
-
-  const projects = ((projectRows ?? []) as unknown as Project[]).map(
-    serializeProject,
-  );
+  const category = serializeCategory(categoryRow);
+  const projects = (await getProjectsByCategory(category.id)).map(serializeProject);
 
   const name = isRtl ? category.nameFa : category.nameEn;
 
