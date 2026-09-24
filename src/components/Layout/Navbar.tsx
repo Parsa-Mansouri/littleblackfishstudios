@@ -130,7 +130,7 @@ export default function Navbar({ locale }: { locale: string }) {
 								className="object-contain"
 							/>
 						</motion.div>
-						<span className="font-lalezar text-xl md:text-2xl text-white tracking-wide transition-opacity group-hover:opacity-80">
+						<span className="font-lalezar text-xl md:text-2xl text-white tracking-wide whitespace-nowrap transition-opacity group-hover:opacity-80">
 							{isRtl
 								? "استودیو ماهی سیاه کوچولو"
 								: "Little Black Fish"}
