@@ -8,15 +8,23 @@
  */
 export const SUPPORT_URL = 'https://lbfstudios.gumroad.com/coffee';
 
+/**
+ * tlcard charge page for supporters in Iran, who can't pay through Gumroad.
+ * Takes Iranian bank cards (Rial).
+ */
+export const SUPPORT_URL_IRAN = 'https://tlcard.ir/charge/7603/8565';
+
 export const SUPPORT_PAGE = {
   en: {
     eyebrow: 'Support',
     title: 'Support the Studio',
     subtitle:
       'We are independent. Every contribution goes straight into the next film — gear, sound, and the time it takes to get it right.',
-    cta: 'Support Us',
-    ctaHint: 'Name your own amount',
-    note: 'Payment is handled securely and opens in a new tab.',
+    ctaIntl: 'Support Us',
+    ctaIntlHint: 'International · any amount',
+    ctaIran: 'Support from Iran',
+    ctaIranHint: 'Iranian bank cards (Rial)',
+    note: 'Payments are handled securely and open in a new tab.',
     contactLead: 'Would rather talk first?',
     contactLink: 'Get in touch',
     metaTitle: 'Support | Little Black Fish Studios',
@@ -28,9 +36,11 @@ export const SUPPORT_PAGE = {
     title: 'حمایت از استودیو',
     subtitle:
       'ما مستقل هستیم. هر حمایت مستقیم صرف فیلم بعدی می‌شود؛ تجهیزات، صدا، و زمانی که کار را درست درمی‌آورد.',
-    cta: 'از ما حمایت کن',
-    ctaHint: 'مبلغ را خودت انتخاب کن',
-    note: 'پرداخت امن است و در زبانه‌ی جدید باز می‌شود.',
+    ctaIntl: 'حمایت بین‌المللی',
+    ctaIntlHint: 'خارج از ایران · مبلغ دلخواه',
+    ctaIran: 'حمایت از داخل ایران',
+    ctaIranHint: 'کارت بانکی ایرانی (ریال)',
+    note: 'پرداخت‌ها امن هستند و در زبانه‌ی جدید باز می‌شوند.',
     contactLead: 'ترجیح می‌دهی اول صحبت کنیم؟',
     contactLink: 'تماس با ما',
     metaTitle: 'حمایت | استودیو ماهی سیاه کوچولو',
